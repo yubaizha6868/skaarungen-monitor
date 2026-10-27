@@ -239,8 +239,9 @@ def main():
         avail = parse_availability(cfg, obj)
     except Exception as e:
         # 查询失败：不推送、不更新每日首检日期，等下次重试
-        print(f"[ERROR] 查询失败，本次跳过：{e}", file=sys.stderr)
-        return 1
+        # 返回 0（而非 1）避免瞬时网络/接口抖动把 GitHub Actions 跑成红色
+        print(f"[ERROR] 查询失败，本次跳过（不计入失败）：{e}", file=sys.stderr)
+        return 0
 
     is_available = len(avail) > 0 and any(n > 0 for n in avail.values())
     today = beijing_date()
