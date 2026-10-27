@@ -1,0 +1,13 @@
+{
+  "webhook_url": "",
+  "channel_id": "9f95c31a-85b8-497d-b9d5-7112092bddb6",
+  "site_base": "https://booking.skaarungen.no",
+  "start_date": "2027-02-06",
+  "end_date": "2027-02-08",
+  "adults": 4,
+  "stay_length": 2,
+  "target_rooms": [
+    {"id": "9aeea430-f7a0-41fb-8fed-6a2045422423", "name": "Top Row"},
+    {"id": "ff182e36-b7d7-460b-9f8c-3710c37de2d5", "name": "Family Top Row"}
+  ]
+}

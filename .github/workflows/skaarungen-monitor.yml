@@ -1,0 +1,43 @@
+name: Skaarungen Room Monitor
+
+# 监控 booking.skaarungen.no 上 "Top Row" / "Family Top Row"
+# 在 2027-02-06 ~ 2027-02-08（2 晚）是否有空房放出。
+# - 有房放出（无 -> 有 上升沿）：立即推送企微
+# - 无房：不推送
+# - 每个北京时间日历日首次检查：推送一次“监控生效 + 当前是否有房”
+# 每 6 小时运行一次（GitHub 服务器 = 云端）。
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'        # 每 6 小时（UTC）
+  workflow_dispatch: {}          # 支持手动触发
+
+permissions:
+  contents: write               # 允许把状态文件 commit 回仓库以持久化
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    env:
+      WECOM_WEBHOOK_URL: ${{ secrets.WECOM_WEBHOOK_URL }}   # 复用已有 secret
+      TZ: Asia/Shanghai
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run monitor
+        run: python skaarungen_monitor.py
+
+      - name: Commit state back
+        if: always()
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add skaarungen_state.json
+          git commit -m "chore: update skaarungen monitor state" || echo "no state change"
+          git push

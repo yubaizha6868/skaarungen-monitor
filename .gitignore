@@ -1,0 +1,6 @@
+# 探查阶段留下的临时文件，不要入库
+chunks/
+*.html
+skaar.html
+skaar_acc.html
+rd_*.html
